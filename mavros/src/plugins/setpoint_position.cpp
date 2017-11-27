@@ -52,7 +52,7 @@ public:
 
 		if (tf_listen) {
 			ROS_INFO_STREAM_NAMED("setpoint", "Listen to position setpoint transform "
-					<< tf_frame_id << " -> " << tf_child_frame_id);
+						<< tf_frame_id << " -> " << tf_child_frame_id);
 			tf2_start("PositionSpTF", &SetpointPositionPlugin::transform_cb);
 		}
 		else {
@@ -79,16 +79,16 @@ private:
 	ros::NodeHandle sp_nh;
 
 	ros::Subscriber setpoint_sub;
-    ros::ServiceServer mav_frame_srv;
+	ros::ServiceServer mav_frame_srv;
 
-    std::string tf_frame_id;
+	std::string tf_frame_id;
 	std::string tf_child_frame_id;
 
 	bool tf_listen;
 	double tf_rate;
 
-    std::string mav_frame_str;
-    uint8_t mav_frame;
+	std::string mav_frame_str;
+	uint8_t mav_frame;
 
 	/* -*- mid-level helpers -*- */
 
@@ -109,21 +109,21 @@ private:
 		const uint16_t ignore_all_except_xyz_y = (1 << 11) | (7 << 6) | (7 << 3);
 
 		auto p = [&] {
-		  if (static_cast<MAV_FRAME>(mav_frame) == MAV_FRAME::BODY_NED || static_cast<MAV_FRAME>(mav_frame) == MAV_FRAME::BODY_OFFSET_NED) {
-			  return ftf::transform_frame_baselink_aircraft(Eigen::Vector3d(tr.translation()));
-		  } else {
-			  return ftf::transform_frame_enu_ned(Eigen::Vector3d(tr.translation()));
-		  }
-		}();
+			if (static_cast<MAV_FRAME>(mav_frame) == MAV_FRAME::BODY_NED || static_cast<MAV_FRAME>(mav_frame) == MAV_FRAME::BODY_OFFSET_NED) {
+				return ftf::transform_frame_baselink_aircraft(Eigen::Vector3d(tr.translation()));
+			} else {
+				return ftf::transform_frame_enu_ned(Eigen::Vector3d(tr.translation()));
+			}
+		} ();
 
 		auto q = [&] {
-		  if (static_cast<MAV_FRAME>(mav_frame) == MAV_FRAME::BODY_NED || static_cast<MAV_FRAME>(mav_frame) == MAV_FRAME::BODY_OFFSET_NED) {
-			  return ftf::transform_orientation_baselink_aircraft(Eigen::Quaterniond(tr.rotation()));
-		  } else {
-			  return ftf::transform_orientation_enu_ned(
-				  ftf::transform_orientation_baselink_aircraft(Eigen::Quaterniond(tr.rotation())));
-		  }
-		}();
+			if (static_cast<MAV_FRAME>(mav_frame) == MAV_FRAME::BODY_NED || static_cast<MAV_FRAME>(mav_frame) == MAV_FRAME::BODY_OFFSET_NED) {
+				return ftf::transform_orientation_baselink_aircraft(Eigen::Quaterniond(tr.rotation()));
+			} else {
+				return ftf::transform_orientation_enu_ned(
+							ftf::transform_orientation_baselink_aircraft(Eigen::Quaterniond(tr.rotation())));
+			}
+		} ();
 
 		set_position_target_local_ned(stamp.toNSec() / 1000000,
 					mav_frame,
@@ -153,11 +153,11 @@ private:
 		send_position_target(req->header.stamp, tr);
 	}
 
-    bool set_mav_frame_cb(mavros_msgs::SetMavFrame::Request &req, mavros_msgs::SetMavFrame::Response &res)
+	bool set_mav_frame_cb(mavros_msgs::SetMavFrame::Request &req, mavros_msgs::SetMavFrame::Response &res)
 	{
-	  mav_frame = utils::enum_value(static_cast<MAV_FRAME>(req.mav_frame));
-	  res.success = true;
-	  return true;
+		mav_frame = utils::enum_value(static_cast<MAV_FRAME>(req.mav_frame));
+		res.success = true;
+		return true;
 	}
 };
 }	// namespace std_plugins
